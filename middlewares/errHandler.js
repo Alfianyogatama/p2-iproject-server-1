@@ -15,8 +15,18 @@ const errHandler = (err, req, res, next) => {
 		code = 400
 		break
 
-		default:
+		case "invalid token":
+		message = ["Invalid token/login"]
+		code = 401
 		break
+
+		case "ValidationErrorItem":
+		message = ["Invalid Url"]
+		code = 400
+		break		
+
+		default:
+		res.send(err)
 	}
 	// res.send(err)
 	res.status(code).json({message})

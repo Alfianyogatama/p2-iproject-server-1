@@ -16,7 +16,8 @@ class Controller {
 
 			const access_token = createToken({
 				id: result.id,
-				email: result.email
+				email: result.email,
+				chatId: result.chatId
 			})
 			res.status(201).json({access_token})
 
