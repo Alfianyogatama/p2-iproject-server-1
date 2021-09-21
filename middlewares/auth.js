@@ -13,6 +13,7 @@ const authentication = async (req, res, next) => {
 			}else{
 				req.user = {
 					id : user.id,
+					chatId: user.chatId,
 					email : user.email
 				}
 
