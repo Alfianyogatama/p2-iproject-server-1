@@ -3,13 +3,23 @@ const errHandler = (err, req, res, next) => {
 	let code = 500
 
 	switch (err.name){
+
 		case "SequelizeValidationError":
+
 		message = err.errors.map(e => e.message)
 		code = 400
 		break
+
+		case "SequelizeUniqueConstraintError":
+		message = ["Email already registered"]
+		code = 400
+		break
+
+		default:
+		break
 	}
 	// res.send(err)
-	res.status(code).json(message)
+	res.status(code).json({message})
 
 }
 

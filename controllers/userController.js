@@ -2,7 +2,7 @@ const { User } = require("./../models");
 const { createToken } = require("./../helpers/jwt");
 
 class Controller {
-	static async register(req, res, next) {
+	static async register(req, res, next){
 		try {
 			const { name, email, password, imgUrl, gender, origin } = req.body;
 			const result = await User.create({
@@ -24,6 +24,15 @@ class Controller {
 			next(err);
 		}
 	}
+
+	/*static async login(req, res, next){
+		try{
+			
+		}
+		catch(err){
+			next(err)
+		}
+	}*/
 }
 
 module.exports = Controller;
