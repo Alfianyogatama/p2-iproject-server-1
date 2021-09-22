@@ -4,8 +4,8 @@ const errHandler = (err, req, res, next) => {
 
 	switch (err.name){
 
-		case "SequelizeValidationError":
 
+		case "SequelizeValidationError":
 		message = err.errors.map(e => e.message)
 		code = 400
 		break
@@ -23,13 +23,38 @@ const errHandler = (err, req, res, next) => {
 		case "ValidationErrorItem":
 		message = ["Invalid Url"]
 		code = 400
-		break		
+		break	
+
+		case "not listed league":
+		message = ["Not listed"]
+		code = 404
+		break	
+
+		case "not found conversations":
+		code = 400
+		message = ["conversation not found "]
+		break
+
+		case "no file" :
+		code = 400
+		message = ["Product image is required"]
+		break
 
 		default:
 		break
 	}
-	res.send(err)
-	// res.status(code).json({message})
+
+/*	switch (err.response.statusText){
+
+		case
+	}*/
+	if (err.response) {
+		message = err.response.statusText
+		code= err.response.status
+	}
+	// console.log(err.data);
+	// res.send(err)
+	res.status(code).json({message})
 
 }
 

@@ -79,9 +79,10 @@ class Controller {
 					`/${SECRET_APP_KEY_TALKJS}/conversations/${conversationId}`
 				);
 				res.status(201).json(result.data);
+			}else{
+				throw({name:'not found conversations'})
 			}
 		} catch (err) {
-			console.log(err);
 			next(err);
 		}
 	}
@@ -89,37 +90,47 @@ class Controller {
 	static async createGroup(req, res, next) {
 		try {
 			const { chatId } = req.user;
-			const { name, subject, imageUrl } = req.body;
+			const imgUrl = req.imgUrl
+			let { name, subject, topic, welcomeMessages } = req.body;
+			welcomeMessages = welcomeMessages ? welcomeMessages : `Wellcome to ${subject}`
 
-			const newGroup = await talkJs.put(
-				`/${SECRET_APP_KEY_TALKJS}/conversations/${name}`,
-				{
-					participants: [`${chatId}`],
-					subject: subject,
-					welcomeMessages: [`Wellcome to ${name} group`],
-					photoUrl: imageUrl,
-				}
-			);
+			const group = await Group.create({
+				name,
+				subject,
+				imageUrl: imgUrl,
+			});
 
-			if (newGroup) {
-				const result = await talkJs.get(
-					`/${SECRET_APP_KEY_TALKJS}/conversations/${name}`
+			if (group) {
+				const newGroup = await talkJs.put(
+					`/${SECRET_APP_KEY_TALKJS}/conversations/${name}`,
+					{
+						participants: [`${chatId}`],
+						subject: subject,
+						custom: {
+							tag: topic
+						},
+						welcomeMessages: [`${welcomeMessages}`],
+						photoUrl: imgUrl,
+					}
 				);
-				if (result) {
+
+				if (newGroup) {
+					const result = await talkJs.get(
+						`/${SECRET_APP_KEY_TALKJS}/conversations/${name}`
+					);
+					if (result) {
+					}
+					
+					res.status(201).json({
+						Group: {
+							result: result.data,
+						},
+					});
 				}
-				const group = await Group.create({
-					name,
-					subject,
-					imageUrl,
-				});
-				res.status(201).json({
-					Group: {
-						result: result.data,
-						group,
-					},
-				});
 			}
+
 		} catch (err) {
+			console.log(err);
 			next(err);
 		}
 	}
