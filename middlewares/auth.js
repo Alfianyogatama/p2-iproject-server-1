@@ -1,7 +1,7 @@
 const {User} = require('./../models')
 const {verifyToken} = require('./../helpers/jwt')
 
-const authentication = async (req, res, next) => {
+const authentication = (req, res, next) => {
 	try{
 		const {access_token} = req.headers
 		if (!access_token) {
@@ -15,8 +15,7 @@ const authentication = async (req, res, next) => {
 					id : user.id,
 					chatId: user.chatId,
 					email : user.email
-				}
-
+				}	
 				next()
 			}
 		}
