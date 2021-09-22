@@ -3,8 +3,8 @@ const { createToken } = require("./../helpers/jwt");
 const { Op } = require("sequelize");
 const axios = require("axios");
 
-const SECRET_KEY_TALKJS = "sk_test_AvUZlJu82mRr1UGJLWWGjBhuHoPhkUlL";
-const SECRET_APP_KEY_TALKJS = "twoPwBx0";
+const SECRET_KEY_TALKJS = process.env.SECRET_KEY_TALKJS;
+const SECRET_APP_KEY_TALKJS = process.env.TALKJS_APPID;
 const talkJs = axios.create({
 	baseURL: "https://api.talkjs.com/v1",
 	headers: {
@@ -62,6 +62,7 @@ class Controller {
 				throw { name: "wrong email/passsword" };
 			}
 		} catch (err) {
+			console.log(err)
 			next(err);
 		}
 	}
