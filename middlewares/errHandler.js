@@ -51,6 +51,9 @@ const errHandler = (err, req, res, next) => {
 	if (err.response) {
 		message = err.response.statusText
 		code= err.response.status
+	}else if(err.message === "name must be unique"){
+		message = "Group name already taken"
+		code= 400
 	}
 	// console.log(err.data);
 	// res.send(err)

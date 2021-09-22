@@ -13,57 +13,79 @@ class Controller {
 		try {
 			const { name, email, password, gender, origin } = req.body;
 			const imgUrl = req.imgUrl;
-			const user = await User.create({
-				name,
-				email,
-				password,
-				imgUrl,
-				gender,
-				origin,
+
+			const user = await User.findOne({
+				where: {
+					email,
+				},
 			});
 
 			if (user) {
-				
-				const logUser = {
-					id: user.chatId,
-					name: user.name,
-					photoUrl: user.imgUrl,
-					headerPhotoUrl: user.imgUrl,
-					email: [`${user.email}`],
-					locale: user.origin,
-				};
+				throw { name: "Email already registered" };
+			} else {
+				const createUser = await User.create({
+					name,
+					email,
+					password,
+					imgUrl,
+					gender,
+					origin,
+				});
 
-				const signIn = await talkJs.put(
-					`/${process.env.TALKJS_APPID}/users/${user.chatId}`,
-					logUser
-				);
+				if (createUser) {
+					const logUser = {
+						id: createUser.chatId,
+						name: createUser.name,
+						photoUrl: createUser.imgUrl,
+						headerPhotoUrl: createUser.imgUrl,
+						email: [`${createUser.email}`],
+						locale: createUser.origin,
+					};
 
-				if (signIn) {
-					const result = await talkJs.get(
-						`/${process.env.TALKJS_APPID}/users/${user.chatId}`
+					const signIn = await talkJs.put(
+						`/${process.env.TALKJS_APPID}/users/${createUser.chatId}`,
+						{
+							name: createUser.name,
+							email: [`${createUser.email}`],
+							photoUrl: createUser.imgUrl,
+							role: "user",
+						}
 					);
-
-					if (result) {
-						const { data: chats } = await talkJs.get(
-							`/${process.env.TALKJS_APPID}/users/${user.chatId}/conversations`
+					if (signIn) {
+						const result = await talkJs.get(
+							`/${process.env.TALKJS_APPID}/users/${createUser.chatId}`
 						);
-						const access_token = createToken({
-							id: user.chatId,
-							email: user.email,
-							chatId: user.chatId,
-						});
 
-						res.status(200).json({
-							user: result.data,
-							access_token,
-							chats,
-						});
+						if (result) {
+							const { data: chats } = await talkJs.get(
+								`/${process.env.TALKJS_APPID}/users/${createUser.chatId}/conversations`
+							);
+							const access_token = createToken({
+								id: createUser.id,
+								email: createUser.email,
+								chatId: createUser.chatId,
+							});
+
+							res.status(200).json({
+								user: result.data,
+								access_token,
+								chats,
+							});
+						}
 					}
+
+					const access_token = createToken({
+						id: createUser.id,
+						email: createUser.email,
+						chatId: createUser.chatId,
+					});
+
+					res.status(200).json({
+						access_token,
+					});
 				}
 			}
-
 		} catch (err) {
-			console.log(err);
 			next(err);
 		}
 	}
