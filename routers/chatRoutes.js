@@ -13,9 +13,11 @@ router.use(authentication)
 router.post('/chats/join', chatController.joinChat)
 router.post('/chats/groups', upload.single('image'), getImageUrl, chatController.createGroup)
 router.post('/chats/sends', chatController.sendMessage)
+router.get('/chats/groups/info/:id', chatController.groupInfo)
 router.get('/chats/groups/messages', chatController.getMessages)
 router.get('/chats/lists', chatController.conversationList)
-
+router.delete('/chats/:id', chatController.deleteGroup)
+router.get('/chats/groups/:id', chatController.searchGroup)
 
 router.use(errHandler)
 
