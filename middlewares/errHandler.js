@@ -26,10 +26,10 @@ const errHandler = (err, req, res, next) => {
 		break		
 
 		default:
-		res.send(err)
+		break
 	}
-	// res.send(err)
-	res.status(code).json({message})
+	res.send(err)
+	// res.status(code).json({message})
 
 }
 

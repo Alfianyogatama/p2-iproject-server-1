@@ -12,6 +12,7 @@ router.post('/chats/join', chatController.joinChat)
 router.post('/chats/groups', chatController.createGroup)
 router.post('/chats/sends', chatController.sendMessage)
 router.get('/chats/groups/messages', chatController.getMessages)
+router.get('/chats/lists', chatController.conversationList)
 
 
 router.use(errHandler)
