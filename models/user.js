@@ -72,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
         notNull : {
           msg: "Gender Url cannot null"
         },
-        isIn : ['male', 'female']
+        isIn : [['male', 'female']]
       }
     },
     origin: {
