@@ -1,5 +1,6 @@
 const { User } = require("./../models");
 const { createToken } = require("./../helpers/jwt");
+const {bcryp} = require("./../helpers/bcrypt")
 const axios = require("axios");
 const talkJs = axios.create({
 	baseURL: "https://api.talkjs.com/v1",
@@ -67,22 +68,18 @@ class Controller {
 							});
 
 							res.status(200).json({
-								user: result.data,
+								user: {
+									id: createUser.id,
+									name: createUser.name,
+									email: createUser.email,
+									chatId: createUser.chatId,
+									photoUrl: createUser.imgUrl,
+								},
 								access_token,
 								chats,
 							});
 						}
 					}
-
-					const access_token = createToken({
-						id: createUser.id,
-						email: createUser.email,
-						chatId: createUser.chatId,
-					});
-
-					res.status(200).json({
-						access_token,
-					});
 				}
 			}
 		} catch (err) {

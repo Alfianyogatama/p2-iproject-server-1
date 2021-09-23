@@ -11,7 +11,11 @@ const errHandler = (err, req, res, next) => {
 		break
 
 		case "SequelizeUniqueConstraintError":
-		message = ["Email already registered"]
+		if (err.errors[0].message === "name must be unique") {
+			message = ["Name for this Group already taken"]
+		}else{
+			message = ["Email already registered"]
+		}
 		code = 400
 		break
 
@@ -25,6 +29,11 @@ const errHandler = (err, req, res, next) => {
 		code = 400
 		break	
 
+		case "wrong email/passsword":
+		message = ["Worng Email/passsword"]
+		code = 401
+		break
+
 		case "not listed league":
 		message = ["Not listed"]
 		code = 404
@@ -37,17 +46,19 @@ const errHandler = (err, req, res, next) => {
 
 		case "no file" :
 		code = 400
-		message = ["Product image is required"]
+		message = ["Group image is required"]
+		break
+
+		case "Email already registered":
+		code = 400
+		message = ["Email already registered"]
 		break
 
 		default:
 		break
 	}
 
-/*	switch (err.response.statusText){
 
-		case
-	}*/
 	if (err.response) {
 		message = err.response.statusText
 		code= err.response.status
@@ -55,7 +66,12 @@ const errHandler = (err, req, res, next) => {
 		message = "Group name already taken"
 		code= 400
 	}
-	// console.log(err.data);
+
+	if (err.message === "File too large") {
+		message = "max image size 255kb"
+		code = 400
+	}
+	
 	// res.send(err)
 	res.status(code).json({message})
 
