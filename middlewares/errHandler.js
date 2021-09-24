@@ -63,12 +63,12 @@ const errHandler = (err, req, res, next) => {
 		message = err.response.statusText
 		code= err.response.status
 	}else if(err.message === "name must be unique"){
-		message = "Group name already taken"
+		message = ["Group name already taken"]
 		code= 400
 	}
 
 	if (err.message === "File too large") {
-		message = "max image size 255kb"
+		message = ["Max image size 255kb"]
 		code = 400
 	}
 	
