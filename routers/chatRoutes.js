@@ -10,6 +10,7 @@ router.post('/register', upload.single('image'), getImageUrl, Controller.registe
 router.post('/login', chatController.login)
 
 router.use(authentication)
+
 router.post('/chats/join', chatController.joinChat)
 router.post('/chats/groups', upload.single('image'), getImageUrl, chatController.createGroup)
 router.post('/chats/sends', chatController.sendMessage)
